@@ -7,34 +7,28 @@ dotenv.config({ path: path.resolve(__dirname, '.env'), quiet: true });
 const isCI = !!process.env.CI;
 
 /**
- * Playwright configuration for API testing only.
- * No browsers are used: tests rely on the `request` fixture (APIRequestContext).
+ * Playwright configuration for API testing only (no browsers).
+ *
+ * The Prop Room API keeps its data in memory and `POST /__reset` restores the seed data for the whole
+ * server, so tests run serially in a single worker: each test resets the data before it starts.
  * Docs: https://playwright.dev/docs/api-testing
  */
 export default defineConfig({
   testDir: './tests',
-  fullyParallel: true,
+  globalSetup: './src/support/global-setup.ts',
+  fullyParallel: false,
+  workers: 1,
   forbidOnly: isCI,
-  retries: isCI ? 2 : 0,
-  workers: isCI ? 2 : undefined,
+  retries: isCI ? 1 : 0,
   timeout: 30_000,
   expect: { timeout: 5_000 },
   reporter: isCI
     ? [['list'], ['html', { open: 'never' }], ['junit', { outputFile: 'test-results/junit.xml' }]]
     : [['list'], ['html', { open: 'never' }]],
   use: {
-    baseURL: process.env.API_BASE_URL || 'https://jsonplaceholder.typicode.com',
-    extraHTTPHeaders: {
-      Accept: 'application/json',
-      ...(process.env.API_TOKEN ? { Authorization: `Bearer ${process.env.API_TOKEN}` } : {}),
-    },
-    ignoreHTTPSErrors: false,
+    baseURL: process.env.API_BASE_URL || 'http://localhost:8000',
+    extraHTTPHeaders: { Accept: 'application/json' },
     trace: 'retain-on-failure',
   },
-  projects: [
-    {
-      name: 'api',
-      testMatch: /.*\.spec\.ts/,
-    },
-  ],
+  projects: [{ name: 'api', testMatch: /.*\.spec\.ts/ }],
 });

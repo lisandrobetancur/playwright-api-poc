@@ -10,6 +10,15 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    services:
+      api:
+        image: ghcr.io/lisandrobetancur/prop-room-api:latest
+        ports:
+          - 8000:8000
+        # The image defines a HEALTHCHECK, so the runner waits until the API is healthy.
+    env:
+      API_BASE_URL: http://localhost:8000
+      API_KEY: test-api-key-123
     steps:
       - uses: actions/checkout@v4
 
@@ -21,14 +30,22 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Wait for the API
+        run: timeout 60 bash -c 'until curl -fsS "$API_BASE_URL/health"; do sleep 1; done'
+
+      - name: Check the generated types match the live contract
+        run: |
+          npm run generate:types
+          git diff --exit-code src/api/schema.d.ts || (echo "::error::src/api/schema.d.ts is out of date. Run npm run generate:types." && exit 1)
+
       - name: Typecheck
         run: npm run typecheck
 
+      - name: Check formatting
+        run: npm run format:check
+
       - name: Run API tests
         run: npm test
-        env:
-          API_BASE_URL: ${{ vars.API_BASE_URL }}
-          API_TOKEN: ${{ secrets.API_TOKEN }}
 
       - name: Upload report
         if: ${{ !cancelled() }}
