@@ -3,7 +3,7 @@ import { buildPost } from '@src/data/post.factory';
 import type { Post } from '@src/types/post';
 
 test.describe('Posts API', () => {
-  test('GET /posts devuelve una lista de posts @smoke', async ({ postsClient }) => {
+  test('GET /posts returns a list of posts @smoke', async ({ postsClient }) => {
     const response = await postsClient.list();
 
     expect(response.status()).toBe(200);
@@ -22,7 +22,7 @@ test.describe('Posts API', () => {
     );
   });
 
-  test('GET /posts?userId filtra por usuario', async ({ postsClient }) => {
+  test('GET /posts?userId filters by user', async ({ postsClient }) => {
     const response = await postsClient.list({ userId: 1 });
 
     expect(response.ok()).toBeTruthy();
@@ -30,7 +30,7 @@ test.describe('Posts API', () => {
     expect(posts.every((p) => p.userId === 1)).toBe(true);
   });
 
-  test('GET /posts/:id devuelve un post existente @smoke', async ({ postsClient }) => {
+  test('GET /posts/:id returns an existing post @smoke', async ({ postsClient }) => {
     const response = await postsClient.getById(1);
 
     expect(response.status()).toBe(200);
@@ -38,12 +38,12 @@ test.describe('Posts API', () => {
     expect(post.id).toBe(1);
   });
 
-  test('GET /posts/:id inexistente devuelve 404', async ({ postsClient }) => {
+  test('GET /posts/:id returns 404 for a missing post', async ({ postsClient }) => {
     const response = await postsClient.getById(999_999);
     expect(response.status()).toBe(404);
   });
 
-  test('POST /posts crea un post', async ({ postsClient }) => {
+  test('POST /posts creates a post', async ({ postsClient }) => {
     const payload = buildPost();
     const response = await postsClient.create(payload);
 
@@ -53,15 +53,15 @@ test.describe('Posts API', () => {
     expect(created.id).toEqual(expect.any(Number));
   });
 
-  test('PATCH /posts/:id actualiza parcialmente un post', async ({ postsClient }) => {
-    const response = await postsClient.update(1, { title: 'Título actualizado' });
+  test('PATCH /posts/:id partially updates a post', async ({ postsClient }) => {
+    const response = await postsClient.update(1, { title: 'Updated title' });
 
     expect(response.status()).toBe(200);
     const updated: Post = await response.json();
-    expect(updated.title).toBe('Título actualizado');
+    expect(updated.title).toBe('Updated title');
   });
 
-  test('DELETE /posts/:id elimina un post', async ({ postsClient }) => {
+  test('DELETE /posts/:id deletes a post', async ({ postsClient }) => {
     const response = await postsClient.delete(1);
     expect(response.status()).toBe(200);
   });

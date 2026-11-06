@@ -7,8 +7,8 @@ dotenv.config({ path: path.resolve(__dirname, '.env'), quiet: true });
 const isCI = !!process.env.CI;
 
 /**
- * Configuración de Playwright exclusiva para pruebas de API.
- * No se usan navegadores: los tests usan el fixture `request` (APIRequestContext).
+ * Playwright configuration for API testing only.
+ * No browsers are used: tests rely on the `request` fixture (APIRequestContext).
  * Docs: https://playwright.dev/docs/api-testing
  */
 export default defineConfig({

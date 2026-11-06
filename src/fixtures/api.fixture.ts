@@ -6,8 +6,8 @@ type ApiFixtures = {
 };
 
 /**
- * Extiende el `test` de Playwright con clientes de API listos para usar.
- * Importa `test` y `expect` desde aquí en lugar de '@playwright/test'.
+ * Extends Playwright's `test` with ready-to-use API clients.
+ * Import `test` and `expect` from here instead of '@playwright/test'.
  */
 export const test = base.extend<ApiFixtures>({
   postsClient: async ({ request }, use) => {

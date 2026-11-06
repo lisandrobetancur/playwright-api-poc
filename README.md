@@ -1,54 +1,57 @@
 # playwright-api-poc
 
-POC de pruebas **solo de API** con [Playwright Test](https://playwright.dev/docs/api-testing) y TypeScript.
-No usa navegadores: todas las pruebas usan `APIRequestContext`.
+Proof of concept for **API-only** testing with [Playwright Test](https://playwright.dev/docs/api-testing) and TypeScript.
+No browsers are used: every test runs through `APIRequestContext`.
 
-## Requisitos
+## Requirements
 
-- Node.js >= 20 (ver `.nvmrc`)
+- Node.js >= 20 (see `.nvmrc`)
 
-## Instalación
+## Setup
 
 ```bash
 npm install
 cp .env.example .env
 ```
 
-> No hace falta `npx playwright install`: las pruebas de API no necesitan navegadores.
+> There is no need to run `npx playwright install`: API tests don't require browsers.
 
-## Comandos
+## Commands
 
-| Comando              | Descripción                                   |
-| -------------------- | --------------------------------------------- |
-| `npm test`           | Ejecuta todas las pruebas                     |
-| `npm run test:smoke` | Ejecuta solo las pruebas etiquetadas `@smoke` |
-| `npm run report`     | Abre el reporte HTML                          |
-| `npm run typecheck`  | Verifica tipos con TypeScript                 |
-| `npm run format`     | Formatea el código con Prettier               |
+| Command              | Description                            |
+| -------------------- | -------------------------------------- |
+| `npm test`           | Run the whole test suite               |
+| `npm run test:smoke` | Run only tests tagged with `@smoke`    |
+| `npm run report`     | Open the HTML report                   |
+| `npm run typecheck`  | Type-check the project with TypeScript |
+| `npm run format`     | Format the code with Prettier          |
 
-## Variables de entorno
+## Environment variables
 
-| Variable       | Descripción                                          | Default                                |
-| -------------- | ---------------------------------------------------- | -------------------------------------- |
-| `API_BASE_URL` | URL base de la API bajo prueba                       | `https://jsonplaceholder.typicode.com` |
-| `API_TOKEN`    | Token opcional, enviado como `Authorization: Bearer` | —                                      |
+| Variable       | Description                                     | Default                                |
+| -------------- | ----------------------------------------------- | -------------------------------------- |
+| `API_BASE_URL` | Base URL of the API under test                  | `https://jsonplaceholder.typicode.com` |
+| `API_TOKEN`    | Optional token, sent as `Authorization: Bearer` | —                                      |
 
-## Estructura
+In CI, set `API_BASE_URL` as a repository variable and `API_TOKEN` as a repository secret
+(Settings → Secrets and variables → Actions).
+
+## Project structure
 
 ```
 ├── playwright.config.ts     # baseURL, headers, reporters, retries
 ├── src/
-│   ├── clients/             # Clientes por recurso (encapsulan endpoints)
-│   ├── data/                # Factories de datos de prueba
-│   ├── fixtures/            # Fixtures de Playwright (inyectan los clientes)
-│   └── types/               # Tipos de los modelos de la API
+│   ├── clients/             # One client per resource (wraps the endpoints)
+│   ├── data/                # Test data factories
+│   ├── fixtures/            # Playwright fixtures (inject the clients)
+│   └── types/               # API model types
 ├── tests/                   # Specs (*.spec.ts)
-└── .github/workflows/       # CI con GitHub Actions
+└── .github/workflows/       # CI with GitHub Actions
 ```
 
-## Añadir un nuevo recurso
+## Adding a new resource
 
-1. Define el tipo en `src/types/`.
-2. Crea un cliente en `src/clients/` que extienda `BaseClient`.
-3. Regístralo como fixture en `src/fixtures/api.fixture.ts`.
-4. Escribe los specs en `tests/` importando `test` y `expect` desde `@src/fixtures/api.fixture`.
+1. Define its type in `src/types/`.
+2. Create a client in `src/clients/` that extends `BaseClient`.
+3. Register it as a fixture in `src/fixtures/api.fixture.ts`.
+4. Write the specs in `tests/`, importing `test` and `expect` from `@src/fixtures/api.fixture`.

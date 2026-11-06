@@ -1,7 +1,7 @@
 {
   "name": "playwright-api-poc",
   "version": "1.0.0",
-  "description": "POC de pruebas de API con Playwright y TypeScript",
+  "description": "API testing proof of concept with Playwright and TypeScript",
   "private": true,
   "type": "commonjs",
   "engines": {

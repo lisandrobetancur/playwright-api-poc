@@ -1,8 +1,8 @@
 import type { APIRequestContext } from '@playwright/test';
 
 /**
- * Cliente base: recibe el APIRequestContext de Playwright (que ya trae
- * baseURL y headers definidos en playwright.config.ts).
+ * Base client: receives Playwright's APIRequestContext, which already carries
+ * the baseURL and headers defined in playwright.config.ts.
  */
 export abstract class BaseClient {
   constructor(protected readonly request: APIRequestContext) {}
