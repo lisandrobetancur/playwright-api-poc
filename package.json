@@ -1,0 +1,30 @@
+{
+  "name": "playwright-api-poc",
+  "version": "1.0.0",
+  "description": "POC de pruebas de API con Playwright y TypeScript",
+  "private": true,
+  "type": "commonjs",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "playwright test",
+    "test:smoke": "playwright test --grep @smoke",
+    "test:debug": "playwright test --debug",
+    "report": "playwright show-report",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:lisandrobetancur/playwright-api-poc.git"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.0",
+    "@types/node": "^26.6.6",
+    "dotenv": "^18.0.9",
+    "prettier": "^3.9.10",
+    "typescript": "^7.0.2"
+  }
+}
